@@ -2,6 +2,7 @@ package io.github.amithkoujalgi.views.chat;
 
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.messages.MessageInput;
+import com.vaadin.flow.component.messages.MessageInputI18n;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -43,6 +44,8 @@ public class ChatView extends VerticalLayout {
             StringUtils.capitalize(OllamaChatMessageRole.ASSISTANT.name().toLowerCase()));
 
     input = new MessageInput();
+    input.setI18n(new MessageInputI18n().setMessage("Ask anything").setSend("Ask"));
+
     chat.setItems(welcome);
     add(header, chat, input);
     input.addSubmitListener(this::onSubmit);
