@@ -1,5 +1,6 @@
 package io.github.amithkoujalgi.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
@@ -14,61 +15,72 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.amithkoujalgi.views.chat.ChatView;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
+/** The main view is a top-level placeholder for other views. */
 public class MainLayout extends AppLayout {
 
-    private H2 viewTitle;
+  private H2 viewTitle;
 
-    public MainLayout() {
-        setPrimarySection(Section.DRAWER);
-        addDrawerContent();
-        addHeaderContent();
-    }
+  public MainLayout() {
+    setPrimarySection(Section.DRAWER);
+    addDrawerContent();
+    addHeaderContent();
 
-    private void addHeaderContent() {
-        DrawerToggle toggle = new DrawerToggle();
-        toggle.setAriaLabel("Menu toggle");
+    String expressionToClearCookies =
+        """
+        function deleteAllCookies() {
+            const cookies = document.cookie.split(";");
 
-        viewTitle = new H2();
-        viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i];
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
+        }
+        deleteAllCookies();
+      """;
+    UI.getCurrent().getPage().executeJs(expressionToClearCookies);
+  }
 
-        addToNavbar(true, toggle, viewTitle);
-    }
+  private void addHeaderContent() {
+    DrawerToggle toggle = new DrawerToggle();
+    toggle.setAriaLabel("Menu toggle");
 
-    private void addDrawerContent() {
-        H1 appName = new H1("Ollama4j Web UI");
-        appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-        Header header = new Header(appName);
+    viewTitle = new H2();
+    viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
-        Scroller scroller = new Scroller(createNavigation());
+    addToNavbar(true, toggle, viewTitle);
+  }
 
-        addToDrawer(header, scroller, createFooter());
-    }
+  private void addDrawerContent() {
+    H1 appName = new H1("Ollama4j Web UI");
+    appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
+    Header header = new Header(appName);
 
-    private SideNav createNavigation() {
-        SideNav nav = new SideNav();
+    Scroller scroller = new Scroller(createNavigation());
 
-        nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS.create()));
+    addToDrawer(header, scroller, createFooter());
+  }
 
-        return nav;
-    }
+  private SideNav createNavigation() {
+    SideNav nav = new SideNav();
+    nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS.create()));
+    return nav;
+  }
 
-    private Footer createFooter() {
-        Footer layout = new Footer();
+  private Footer createFooter() {
+    Footer layout = new Footer();
+    return layout;
+  }
 
-        return layout;
-    }
+  @Override
+  protected void afterNavigation() {
+    super.afterNavigation();
+    viewTitle.setText(getCurrentPageTitle());
+  }
 
-    @Override
-    protected void afterNavigation() {
-        super.afterNavigation();
-        viewTitle.setText(getCurrentPageTitle());
-    }
-
-    private String getCurrentPageTitle() {
-        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
-        return title == null ? "" : title.value();
-    }
+  private String getCurrentPageTitle() {
+    PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
+    return title == null ? "" : title.value();
+  }
 }
