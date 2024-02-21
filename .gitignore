@@ -25,6 +25,7 @@ replay_pid*
 
 .idea/
 target/
+frontend/generated
 .DS_Store
 *.DS_Store
 **/.DS_Store
