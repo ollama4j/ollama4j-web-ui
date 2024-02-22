@@ -65,6 +65,7 @@ public class MainLayout extends AppLayout {
   private SideNav createNavigation() {
     SideNav nav = new SideNav();
     nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS.create()));
+    nav.addItem(new SideNavItem("GitHub", "https://github.com/ollama4j/ollama4j-web-ui", LineAwesomeIcon.GITHUB.create()));
     return nav;
   }
 
