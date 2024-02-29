@@ -6,6 +6,7 @@ import io.github.amithkoujalgi.ollama4j.core.OllamaStreamHandler;
 import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
 import io.github.amithkoujalgi.ollama4j.core.models.Model;
 import io.github.amithkoujalgi.ollama4j.core.models.chat.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -41,6 +42,13 @@ public class ChatService implements Serializable {
     return modelItems;
   }
 
+  public Collection<ModelItem> getImageModelItems()
+      throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
+    Collection<ModelItem> modelItems = new ArrayList<>(Collections.emptyList());
+    modelItems.add(new ModelItem("llava", "latest"));
+    return modelItems;
+  }
+
   public Collection<Model> getModels()
       throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
     return ollamaAPI.listModels();
@@ -50,6 +58,23 @@ public class ChatService implements Serializable {
     OllamaChatRequestBuilder builder = OllamaChatRequestBuilder.getInstance(model);
     OllamaChatRequestModel ollamaChatRequestModel =
         builder.withMessages(messages).withMessage(OllamaChatMessageRole.USER, message).build();
+    try {
+      OllamaChatResult chat = ollamaAPI.chat(ollamaChatRequestModel, streamHandler);
+      messages = chat.getChatHistory();
+      chat.getResponse();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void askWithImages(
+      String message, List<File> imageFiles, String model, OllamaStreamHandler streamHandler) {
+    OllamaChatRequestBuilder builder = OllamaChatRequestBuilder.getInstance(model);
+    OllamaChatRequestModel ollamaChatRequestModel =
+        builder
+            .withMessages(messages)
+            .withMessage(OllamaChatMessageRole.USER, message, imageFiles)
+            .build();
     try {
       OllamaChatResult chat = ollamaAPI.chat(ollamaChatRequestModel, streamHandler);
       messages = chat.getChatHistory();
