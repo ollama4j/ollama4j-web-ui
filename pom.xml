@@ -43,6 +43,14 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>gh-repo</id>
+            <name>ollama4j-web-ui</name>
+            <url>https://github.com/ollama4j/ollama4j-web-ui.git</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.github.amithkoujalgi</groupId>
