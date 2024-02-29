@@ -8,6 +8,11 @@ on:
     types: [created]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   build:
 
