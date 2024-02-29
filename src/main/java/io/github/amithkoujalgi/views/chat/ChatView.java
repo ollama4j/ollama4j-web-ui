@@ -42,17 +42,18 @@ public class ChatView extends VerticalLayout {
 
     ComboBox<ModelItem> comboBox = new ComboBox<>("Models");
     try {
-      comboBox.setItems(chatService.getModels());
+      comboBox.setItems(chatService.getModelItems());
     } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }
     comboBox.setItemLabelGenerator(ModelItem::getName);
     comboBox.setWidthFull();
     try {
-      Optional<ModelItem> model = chatService.getModels().stream().findFirst();
-      model.ifPresent(
-          modelItem ->
-              comboBox.setValue(new ModelItem(modelItem.getName(), modelItem.getVersion())));
+      Optional<ModelItem> model = chatService.getModelItems().stream().findFirst();
+      if (model.isPresent()) {
+        comboBox.setValue(new ModelItem(model.get().getName(), model.get().getVersion()));
+        modelSelected = model.get().getName();
+      }
     } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }

@@ -4,6 +4,7 @@ import io.github.amithkoujalgi.data.ModelItem;
 import io.github.amithkoujalgi.ollama4j.core.OllamaAPI;
 import io.github.amithkoujalgi.ollama4j.core.OllamaStreamHandler;
 import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
+import io.github.amithkoujalgi.ollama4j.core.models.Model;
 import io.github.amithkoujalgi.ollama4j.core.models.chat.*;
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,13 +32,18 @@ public class ChatService implements Serializable {
     messages.clear();
   }
 
-  public Collection<ModelItem> getModels()
+  public Collection<ModelItem> getModelItems()
       throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
     Collection<ModelItem> modelItems = new ArrayList<>(Collections.emptyList());
     ollamaAPI
         .listModels()
         .forEach(x -> modelItems.add(new ModelItem(x.getModelName(), x.getModelVersion())));
     return modelItems;
+  }
+
+  public Collection<Model> getModels()
+      throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
+    return ollamaAPI.listModels();
   }
 
   public void ask(String message, String model, OllamaStreamHandler streamHandler) {
