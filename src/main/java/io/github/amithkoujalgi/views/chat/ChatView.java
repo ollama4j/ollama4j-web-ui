@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The main view contains a text field for getting the user name and a button that shows a greeting
@@ -47,14 +48,21 @@ public class ChatView extends VerticalLayout {
     }
     comboBox.setItemLabelGenerator(ModelItem::getName);
     comboBox.setWidthFull();
+    try {
+      Optional<ModelItem> model = chatService.getModels().stream().findFirst();
+      model.ifPresent(
+          modelItem ->
+              comboBox.setValue(new ModelItem(modelItem.getName(), modelItem.getVersion())));
+    } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
+      throw new RuntimeException(e);
+    }
 
     comboBox.addValueChangeListener(
         event -> {
           MessageListItem welcome =
               new MessageListItem(
                   String.format(
-                      "Hi! I'm %s. How may I assist you today?",
-                      event.getValue().getName()),
+                      "Hi! I'm %s. How may I assist you today?", event.getValue().getName()),
                   Instant.now(),
                   "AI");
           welcome.setUserAbbreviation("AI");
@@ -71,7 +79,10 @@ public class ChatView extends VerticalLayout {
     chat = new MessageList();
 
     MessageListItem welcome =
-        new MessageListItem("Hello there! Select a model to start chatting with AI.", Instant.now(), "AI");
+        new MessageListItem(
+            "Hello there! Select a model to start chatting with AI.", Instant.now(), "AI");
+    welcome.setUserAbbreviation("AI");
+    welcome.setUserColorIndex(2);
 
     input = new MessageInput();
     input.setI18n(new MessageInputI18n().setMessage("Ask anything").setSend("Ask"));

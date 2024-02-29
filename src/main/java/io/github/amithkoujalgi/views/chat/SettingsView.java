@@ -70,7 +70,9 @@ public class SettingsView extends VerticalLayout {
     chat = new MessageList();
 
     MessageListItem welcome =
-        new MessageListItem("Hello there! Select a model to start chatting with AI.", Instant.now(), "AI");
+        new MessageListItem("Hello there! Select a model to start chatting.", Instant.now(), "AI");
+    welcome.setUserAbbreviation("AI");
+    welcome.setUserColorIndex(2);
 
     input = new MessageInput();
     input.setI18n(new MessageInputI18n().setMessage("Ask anything").setSend("Ask"));
