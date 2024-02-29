@@ -1,35 +1,47 @@
 package io.github.amithkoujalgi.service;
 
+import io.github.amithkoujalgi.data.ModelItem;
 import io.github.amithkoujalgi.ollama4j.core.OllamaAPI;
 import io.github.amithkoujalgi.ollama4j.core.OllamaStreamHandler;
+import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
 import io.github.amithkoujalgi.ollama4j.core.models.chat.*;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChatService implements Serializable {
-  @Value("${ollama.url}")
-  private String ollamaUrl;
 
+  @Getter
   @Value("${ollama.model}")
   private String ollamaModel;
 
-  @Value("${ollama.request-timeout-seconds:120}")
-  private int ollamaRequestTimeoutSeconds;
-
+  @Autowired private OllamaAPI ollamaAPI;
   private List<OllamaChatMessage> messages = new ArrayList<>();
 
-  public String getOllamaModel() {
-    return ollamaModel;
+  public void clearMessages() {
+    messages.clear();
   }
 
-  public void ask(String message, OllamaStreamHandler streamHandler) {
-    OllamaAPI ollamaAPI = new OllamaAPI(ollamaUrl);
-    ollamaAPI.setRequestTimeoutSeconds(ollamaRequestTimeoutSeconds);
-    OllamaChatRequestBuilder builder = OllamaChatRequestBuilder.getInstance(ollamaModel);
+  public Collection<ModelItem> getModels()
+      throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
+    Collection<ModelItem> modelItems = new ArrayList<>(Collections.emptyList());
+    ollamaAPI
+        .listModels()
+        .forEach(x -> modelItems.add(new ModelItem(x.getModelName(), x.getModelVersion())));
+    return modelItems;
+  }
+
+  public void ask(String message, String model, OllamaStreamHandler streamHandler) {
+    OllamaChatRequestBuilder builder = OllamaChatRequestBuilder.getInstance(model);
     OllamaChatRequestModel ollamaChatRequestModel =
         builder.withMessages(messages).withMessage(OllamaChatMessageRole.USER, message).build();
     try {

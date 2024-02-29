@@ -23,11 +23,10 @@ import java.util.List;
  * The main view contains a text field for getting the user name and a button that shows a greeting
  * message in a notification.
  */
-@PageTitle("Chat")
-@Route(value = "chat", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
-public class ChatView extends VerticalLayout {
-
+@PageTitle("Settings")
+@Route(value = "settings", layout = MainLayout.class)
+@RouteAlias(value = "settings", layout = MainLayout.class)
+public class SettingsView extends VerticalLayout {
   private ChatService chatService;
 
   private MessageList chat;
@@ -35,7 +34,7 @@ public class ChatView extends VerticalLayout {
   private String modelSelected;
   private List<MessageListItem> chatEntries = new ArrayList<>();
 
-  public ChatView(ChatService chatService) {
+  public SettingsView(ChatService chatService) {
     this.chatService = chatService;
     //    H5 header = new H5("Model: " + chatService.getOllamaModel());
 

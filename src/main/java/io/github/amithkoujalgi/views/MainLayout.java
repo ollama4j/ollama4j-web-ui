@@ -13,6 +13,7 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.amithkoujalgi.views.chat.ChatView;
+import io.github.amithkoujalgi.views.chat.SettingsView;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /** The main view is a top-level placeholder for other views. */
@@ -65,7 +66,12 @@ public class MainLayout extends AppLayout {
   private SideNav createNavigation() {
     SideNav nav = new SideNav();
     nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS.create()));
-    nav.addItem(new SideNavItem("GitHub", "https://github.com/ollama4j/ollama4j-web-ui", LineAwesomeIcon.GITHUB.create()));
+    nav.addItem(new SideNavItem("Settings", SettingsView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));
+    nav.addItem(
+        new SideNavItem(
+            "GitHub",
+            "https://github.com/ollama4j/ollama4j-web-ui",
+            LineAwesomeIcon.GITHUB.create()));
     return nav;
   }
 
