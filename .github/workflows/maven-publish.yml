@@ -34,7 +34,7 @@ jobs:
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: Build with Maven
-      run: mvn -B -Drevision=${{ env.RELEASE_VERSION }} clean package --file pom.xml
+      run: mvn -B -Drevision=${{ env.RELEASE_VERSION }} clean package --file pom.xml -Pproduction
 
     - name: Release Assets
       uses: softprops/action-gh-release@v1
