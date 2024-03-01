@@ -4,7 +4,8 @@ A web UI for [Ollama](https://ollama.com/) written in Java
 using [Spring Boot](https://spring.io/projects/spring-boot/) and [Vaadin](https://vaadin.com/) framework
 and [Ollama4j](https://github.com/amithkoujalgi/ollama4j).
 
-The goal of the project is to enable Ollama users coming from Java and Spring background to have a fully functional web UI.
+The goal of the project is to enable Ollama users coming from Java and Spring background to have a fully functional web
+UI.
 
 This project focuses on the raw capabilities of interacting with various models running on Ollama servers.
 
@@ -13,6 +14,7 @@ This project focuses on the raw capabilities of interacting with various models 
 - [How does it work?](#how-does-it-work)
 - [Requirements](#requirements)
 - [Run the app](#running-the-application)
+- [Screenshots](#screenshots)
 - [Dev Contributions](#get-involved)
 
 #### How does it work?
@@ -78,11 +80,10 @@ java -jar ollama4j-web-ui-$VERSION.jar \
 Then open http://localhost:8080 in your browser to access the Ollama4j Web UI.
 
 ## Screenshots
+
 <img width="2048" alt="Screenshot 2024-03-02 at 12 17 32 AM" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/426c7ab7-2a27-4bae-87db-daa6a499395c">
 <img width="2048" alt="Screenshot 2024-03-02 at 12 23 47 AM" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/c697fd1d-0323-4351-b9a7-25166eff4c7e">
 <img width="2048" alt="Screenshot 2024-03-02 at 12 23 34 AM" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/1ac899bc-a19e-4dc0-bee1-63b67e8fb346">
-
-
 
 ### Get Involved
 
