@@ -4,8 +4,8 @@
 name: Maven Package
 
 on:
-  release:
-    types: [created]
+#  release:
+#    types: [created]
   workflow_dispatch:
 
 permissions:
