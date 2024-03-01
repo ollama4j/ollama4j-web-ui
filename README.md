@@ -1,9 +1,10 @@
 # Ollama4j Web UI
 
-A Web-based UI for [Ollama](https://ollama.com/) written in Java
-using [Spring Boot](https://spring.io/projects/spring-boot/) and [Vaadin](https://vaadin.com/) framework.
+A web UI for [Ollama](https://ollama.com/) written in Java
+using [Spring Boot](https://spring.io/projects/spring-boot/) and [Vaadin](https://vaadin.com/) framework
+and [Ollama4j](https://github.com/amithkoujalgi/ollama4j).
 
-The goal of the project is to enable Ollama users coming from Java background to have a fully functional web UI.
+The goal of the project is to enable Ollama users coming from Java and Spring background to have a fully functional web UI.
 
 This project focuses on the raw capabilities of interacting with various models running on Ollama servers.
 
@@ -36,6 +37,8 @@ This project focuses on the raw capabilities of interacting with various models 
 
 ## Running the application
 
+### Download
+
 Download the latest version from [here](https://github.com/ollama4j/ollama4j-web-ui/releases).
 
 Or, you could download it via command-line.
@@ -45,13 +48,34 @@ Just make sure to specify the version you want to download.
 VERSION=0.0.1; wget https://github.com/ollama4j/ollama4j-web-ui/releases/download/$VERSION/ollama4j-web-ui-$VERSION.jar
 ```
 
-After downloading the file, run the app.
+### Configure
+
+Create a file `application.properties` and add the following configuration.
+Update the values of `server.port` and `ollama.url` according to your needs.
 
 ```shell
-java -jar ollama4j-web-ui-$VERSION.jar
+server.port=8080
+logging.level.org.atmosphere = warn
+
+spring.mustache.check-template-location = false
+spring.servlet.multipart.max-file-size=50MB
+spring.servlet.multipart.max-request-size=50MB
+
+vaadin.launch-browser=true
+vaadin.whitelisted-packages = com.vaadin,org.vaadin,dev.hilla,io.github.amithkoujalgi
+
+ollama.url=http://localhost:11434
+ollama.request-timeout-seconds=120
 ```
 
-Then open http://localhost:8080 in your browser.
+### Run the app
+
+```shell
+java -jar ollama4j-web-ui-$VERSION.jar \
+  --spring.config.location=/path/to/your/application.properties
+```
+
+Then open http://localhost:8080 in your browser to access the Ollama4j Web UI.
 
 ### Get Involved
 
@@ -61,5 +85,8 @@ of contribution is much appreciated.
 
 ### Credits
 
-The nomenclature and the icon have been adopted from the incredible [Ollama](https://ollama.ai/)
+The project is inspired by the awesome [ollama4j-ui](https://github.com/AgentSchmecker/ollama4j-ui) project
+by [@AgentSchmecker](https://github.com/AgentSchmecker).
+
+The nomenclature has been adopted from the incredible [Ollama](https://ollama.ai/)
 project.
