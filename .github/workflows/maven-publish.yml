@@ -38,5 +38,6 @@ jobs:
 
     - name: Release Assets
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: target/ollama4j-web-ui-0.0.1.jar
