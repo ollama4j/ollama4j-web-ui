@@ -22,6 +22,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.amithkoujalgi.data.ModelItem;
+import io.github.amithkoujalgi.data.ModelListItem;
 import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
 import io.github.amithkoujalgi.ollama4j.core.models.Model;
 import io.github.amithkoujalgi.service.ChatService;
@@ -153,13 +154,13 @@ public class ModelsView extends Div {
     }
 
     private Component createGrid() {
-      grid = new Grid<>(Model.class, false);
+      grid = new Grid<>(ModelListItem.class, false);
       grid.addColumn("model").setAutoWidth(true);
       grid.addColumn("modifiedAt").setAutoWidth(true);
       grid.addColumn("digest").setAutoWidth(true);
       grid.addColumn("size").setAutoWidth(true);
 
-      Collection<Model> items = null;
+      Collection<ModelListItem> items = null;
       try {
         items = chatService.getModels();
       } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {

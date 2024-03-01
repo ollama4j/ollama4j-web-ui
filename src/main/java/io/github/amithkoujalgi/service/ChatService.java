@@ -1,6 +1,7 @@
 package io.github.amithkoujalgi.service;
 
 import io.github.amithkoujalgi.data.ModelItem;
+import io.github.amithkoujalgi.data.ModelListItem;
 import io.github.amithkoujalgi.ollama4j.core.OllamaAPI;
 import io.github.amithkoujalgi.ollama4j.core.OllamaStreamHandler;
 import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
@@ -10,11 +11,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -49,9 +54,25 @@ public class ChatService implements Serializable {
     return modelItems;
   }
 
-  public Collection<Model> getModels()
+  public Collection<ModelListItem> getModels()
       throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
-    return ollamaAPI.listModels();
+    Collection<Model> models = ollamaAPI.listModels();
+    Collection<ModelListItem> modelListItems = new ArrayList<>();
+    models.forEach(
+        m -> {
+          DateTimeFormatter formatter =
+              DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm a").withZone(ZoneId.systemDefault());
+          ZonedDateTime dateTime =
+              ZonedDateTime.parse(m.getModifiedAt(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+          modelListItems.add(
+              new ModelListItem(
+                  m.getModelName(),
+                  m.getModel(),
+                  dateTime.format(formatter),
+                  m.getDigest(),
+                  FileUtils.byteCountToDisplaySize(m.getSize())));
+        });
+    return modelListItems;
   }
 
   public void ask(String message, String model, OllamaStreamHandler streamHandler) {

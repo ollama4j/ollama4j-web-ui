@@ -1,5 +1,6 @@
 package io.github.amithkoujalgi.views.chat;
 
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -97,7 +98,8 @@ public class ChatWithImageView extends VerticalLayout {
     MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
     Upload upload = new Upload(buffer);
     upload.setWidthFull();
-    upload.setHeightFull();
+    upload.setMaxHeight(70, Unit.PIXELS);
+    //    upload.setHeightFull();
     upload.setMaxFileSize(50 * 1024 * 1024);
 
     upload.addSucceededListener(
@@ -121,13 +123,20 @@ public class ChatWithImageView extends VerticalLayout {
           chatEntries.clear();
           //          header.setText("Images: None");
           chatService.clearMessages();
+
+          MessageListItem welcome =
+                  new MessageListItem(
+                          "Hello there! Upload images to start chatting with AI.", Instant.now(), "AI");
+          welcome.setUserAbbreviation("AI");
+          welcome.setUserColorIndex(2);
+          chat.setItems(welcome);
         });
 
     chat = new MessageList();
 
     MessageListItem welcome =
         new MessageListItem(
-            "Hello there! Select a model to start chatting with AI.", Instant.now(), "AI");
+            "Hello there! Upload images to start chatting with AI.", Instant.now(), "AI");
     welcome.setUserAbbreviation("AI");
     welcome.setUserColorIndex(2);
 
