@@ -1,7 +1,4 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
-
-name: Maven Package
+name: Release JAR
 
 on:
   push:
@@ -33,14 +30,16 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
+    - name: Get tag name
+      id: tagname
+      run: echo "::set-output name=tagname::${GITHUB_REF#refs/tags/}"
+
+    - name: Extract revision number
+      id: revision
+      run: echo "::set-output name=revision::$(echo ${{ steps.tagname.outputs.tagname }} | cut -d '.' -f 3)"
+
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
-
-    # - name: Publish to GitHub Packages Apache Maven
-    #   run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-    #   env:
-    #     GITHUB_TOKEN: ${{ github.token }}
-
+      run: mvn -B -Drevision=${{ steps.revision.outputs.revision }} clean package --file pom.xml
 
     - name: Release Assets
       uses: softprops/action-gh-release@v1
