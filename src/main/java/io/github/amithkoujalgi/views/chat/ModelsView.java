@@ -49,7 +49,7 @@ public class ModelsView extends Div {
     filters = new Filters(() -> filters.refreshGrid(), grid);
     filters.setup(chatService);
 
-    VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters.createGrid());
+    VerticalLayout layout = new VerticalLayout( filters.createGrid());
     layout.setSizeFull();
     layout.setPadding(false);
     layout.setSpacing(false);

@@ -40,25 +40,27 @@ public class ChatView extends VerticalLayout {
     this.chatService = chatService;
     //    H5 header = new H5("Model: " + chatService.getOllamaModel());
 
-    ComboBox<ModelItem> comboBox = new ComboBox<>("Models");
+    ComboBox<ModelItem> modelsDropdown = new ComboBox<>("Models");
     try {
-      comboBox.setItems(chatService.getModelItems());
+      modelsDropdown.setItems(chatService.getModelItems());
     } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }
-    comboBox.setItemLabelGenerator(ModelItem::getName);
-    comboBox.setWidthFull();
+    modelsDropdown.setItemLabelGenerator(ModelItem::getName);
+    modelsDropdown.setWidthFull();
+    modelsDropdown.setMaxWidth("1200px");
+
     try {
       Optional<ModelItem> model = chatService.getModelItems().stream().findFirst();
       if (model.isPresent()) {
-        comboBox.setValue(new ModelItem(model.get().getName(), model.get().getVersion()));
+        modelsDropdown.setValue(new ModelItem(model.get().getName(), model.get().getVersion()));
         modelSelected = model.get().getName();
       }
     } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }
 
-    comboBox.addValueChangeListener(
+    modelsDropdown.addValueChangeListener(
         event -> {
           MessageListItem welcome =
               new MessageListItem(
@@ -75,7 +77,7 @@ public class ChatView extends VerticalLayout {
           //          header.setText(modelSelected);
         });
 
-    add(comboBox);
+//    add(modelsDropdown);
 
     chat = new MessageList();
 
@@ -90,9 +92,9 @@ public class ChatView extends VerticalLayout {
 
     chat.setItems(welcome);
     //    add(header, chat, input);
-    add(chat, input);
+    add(modelsDropdown, chat, input);
     input.addSubmitListener(this::onSubmit);
-    this.setHorizontalComponentAlignment(Alignment.CENTER, chat, input);
+    this.setHorizontalComponentAlignment(Alignment.CENTER, modelsDropdown,chat, input);
     this.setPadding(true);
     this.setHeightFull();
     chat.setSizeFull();
