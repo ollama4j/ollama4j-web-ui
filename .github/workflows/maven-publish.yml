@@ -3,7 +3,10 @@
 
 name: Maven Package
 
-on: push
+on:
+  push:
+    tags:
+      - '**'
 
 permissions:
   contents: read
