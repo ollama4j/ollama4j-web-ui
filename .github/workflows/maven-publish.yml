@@ -30,16 +30,11 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Get tag name
-      id: tagname
-      run: echo "::set-output name=tagname::${GITHUB_REF#refs/tags/}"
-
-    - name: Extract revision number
-      id: revision
-      run: echo "::set-output name=revision::$(echo ${{ steps.tagname.outputs.tagname }} | cut -d '.' -f 3)"
+    - name: Set env
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: Build with Maven
-      run: mvn -B -Drevision=${{ steps.revision.outputs.revision }} clean package --file pom.xml
+      run: mvn -B -Drevision=${{ env.RELEASE_VERSION }} clean package --file pom.xml
 
     - name: Release Assets
       uses: softprops/action-gh-release@v1
