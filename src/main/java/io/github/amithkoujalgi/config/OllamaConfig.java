@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Config {
+public class OllamaConfig {
   @Value("${ollama.url}")
   private String ollamaUrl;
 
@@ -16,6 +16,7 @@ public class Config {
   @Bean
   OllamaAPI getOllamaAPI() {
     OllamaAPI ollamaAPI = new OllamaAPI(ollamaUrl);
+    ollamaAPI.setVerbose(false);
     ollamaAPI.setRequestTimeoutSeconds(ollamaRequestTimeoutSeconds);
     return ollamaAPI;
   }

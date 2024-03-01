@@ -3,17 +3,18 @@ package io.github.amithkoujalgi.views.chat;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageInputI18n;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.amithkoujalgi.data.ModelItem;
 import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
 import io.github.amithkoujalgi.service.ChatService;
@@ -46,30 +47,31 @@ public class ChatWithImageView extends VerticalLayout {
 
   public ChatWithImageView(ChatService chatService) {
     this.chatService = chatService;
-    H5 header = new H5("Images: None");
+    //    H5 header = new H5("Images: None");
     Button resetButton = new Button("Reset");
     resetButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    setHorizontalComponentAlignment(Alignment.END, resetButton);
+    //    setHorizontalComponentAlignment(Alignment.END, resetButton);
 
-    ComboBox<ModelItem> comboBox = new ComboBox<>("Image Models");
+    ComboBox<ModelItem> modelsDropdown = new ComboBox<>("Image Models");
     try {
-      comboBox.setItems(chatService.getImageModelItems());
+      modelsDropdown.setItems(chatService.getImageModelItems());
     } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }
-    comboBox.setItemLabelGenerator(ModelItem::getName);
-    comboBox.setWidthFull();
+    modelsDropdown.setItemLabelGenerator(ModelItem::getName);
+    modelsDropdown.setWidthFull();
+    modelsDropdown.setMaxWidth("1200px");
     try {
       Optional<ModelItem> model = chatService.getImageModelItems().stream().findFirst();
       if (model.isPresent()) {
-        comboBox.setValue(new ModelItem(model.get().getName(), model.get().getVersion()));
+        modelsDropdown.setValue(new ModelItem(model.get().getName(), model.get().getVersion()));
         modelSelected = model.get().getName();
       }
     } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }
 
-    comboBox.addValueChangeListener(
+    modelsDropdown.addValueChangeListener(
         event -> {
           MessageListItem welcome =
               new MessageListItem(
@@ -86,15 +88,17 @@ public class ChatWithImageView extends VerticalLayout {
           //          header.setText(modelSelected);
         });
 
-    add(comboBox);
-    add(header);
-    add(resetButton);
+    //    add(comboBox);
+    //    add(header);
+
+    HorizontalLayout container = new HorizontalLayout();
+    container.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.BETWEEN);
 
     MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
     Upload upload = new Upload(buffer);
     upload.setWidthFull();
     upload.setHeightFull();
-    upload.setMaxFileSize(1000 * 1024);
+    upload.setMaxFileSize(50 * 1024 * 1024);
 
     upload.addSucceededListener(
         event -> {
@@ -102,19 +106,20 @@ public class ChatWithImageView extends VerticalLayout {
           InputStream inputStream = buffer.getInputStream(fileName);
           try {
             imageFiles.add(inputStreamToFile(inputStream));
-            header.setText("Images: " + imageFiles.size());
+            //            header.setText("Images: " + imageFiles.size());
           } catch (IOException e) {
             throw new RuntimeException(e);
           }
         });
-    add(upload);
+
+    container.add(upload, resetButton);
 
     resetButton.addClickListener(
         event -> {
           imageFiles.clear();
           upload.clearFileList();
           chatEntries.clear();
-          header.setText("Images: None");
+          //          header.setText("Images: None");
           chatService.clearMessages();
         });
 
@@ -131,9 +136,9 @@ public class ChatWithImageView extends VerticalLayout {
 
     chat.setItems(welcome);
     //    add(header, chat, input);
-    add(chat, input);
+    add(modelsDropdown, container, chat, input);
     input.addSubmitListener(this::onSubmit);
-    this.setHorizontalComponentAlignment(Alignment.CENTER, chat, input);
+    this.setHorizontalComponentAlignment(Alignment.CENTER, modelsDropdown, container, chat, input);
     this.setPadding(true);
     this.setHeightFull();
     chat.setSizeFull();
