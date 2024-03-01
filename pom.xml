@@ -7,10 +7,11 @@
     <groupId>io.github.amithkoujalgi</groupId>
     <artifactId>ollama4j-web-ui</artifactId>
     <name>ollama4j-web-ui</name>
-    <version>0.0.1</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
     <properties>
+        <revision>0.0.1</revision>
         <java.version>17</java.version>
         <vaadin.version>24.3.5</vaadin.version>
     </properties>
