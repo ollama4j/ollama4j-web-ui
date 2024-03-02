@@ -55,7 +55,7 @@ public class ChatService implements Serializable {
     models.forEach(
         m -> {
           DateTimeFormatter formatter =
-              DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm a").withZone(ZoneId.systemDefault());
+              DateTimeFormatter.ofPattern("dd MMM, yyyy hh:mm A").withZone(ZoneId.systemDefault());
           ZonedDateTime dateTime =
               ZonedDateTime.parse(m.getModifiedAt(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
           modelListItems.add(
