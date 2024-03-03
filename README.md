@@ -79,7 +79,7 @@ java -jar ollama4j-web-ui-$VERSION.jar \
 
 Then open http://localhost:8080 in your browser to access the Ollama4j Web UI.
 
-## Screenshots
+### Screenshots
 
 <img width="2048" alt="Chat" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/426c7ab7-2a27-4bae-87db-daa6a499395c">
 <img width="2048" alt="Image Chat" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/1ac899bc-a19e-4dc0-bee1-63b67e8fb346">
