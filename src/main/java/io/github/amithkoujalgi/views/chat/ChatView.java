@@ -10,9 +10,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import io.github.amithkoujalgi.data.ModelItem;
-import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
 import io.github.amithkoujalgi.service.ChatService;
 import io.github.amithkoujalgi.views.MainLayout;
+import io.github.ollama4j.exceptions.OllamaBaseException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
@@ -43,7 +44,7 @@ public class ChatView extends VerticalLayout {
     ComboBox<ModelItem> modelsDropdown = new ComboBox<>("Models");
     try {
       modelsDropdown.setItems(chatService.getModelItems());
-    } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
+    } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException  e) {
       throw new RuntimeException(e);
     }
     modelsDropdown.setItemLabelGenerator(ModelItem::getName);

@@ -17,7 +17,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.amithkoujalgi.data.ModelItem;
-import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
+import io.github.ollama4j.exceptions.OllamaBaseException;
 import io.github.amithkoujalgi.service.ChatService;
 import io.github.amithkoujalgi.views.MainLayout;
 import java.io.File;
@@ -56,7 +56,7 @@ public class ChatWithImageView extends VerticalLayout {
     ComboBox<ModelItem> modelsDropdown = new ComboBox<>("Image Models");
     try {
       modelsDropdown.setItems(chatService.getImageModelItems());
-    } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
+    } catch (IOException | URISyntaxException | InterruptedException | OllamaBaseException e) {
       throw new RuntimeException(e);
     }
     modelsDropdown.setItemLabelGenerator(ModelItem::getName);

@@ -2,15 +2,14 @@ package io.github.amithkoujalgi.service;
 
 import io.github.amithkoujalgi.data.ModelItem;
 import io.github.amithkoujalgi.data.ModelListItem;
-import io.github.amithkoujalgi.ollama4j.core.OllamaAPI;
-import io.github.amithkoujalgi.ollama4j.core.OllamaStreamHandler;
-import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
-import io.github.amithkoujalgi.ollama4j.core.models.Model;
-import io.github.amithkoujalgi.ollama4j.core.models.chat.*;
+import io.github.ollama4j.OllamaAPI;
+import io.github.ollama4j.exceptions.OllamaBaseException;
+import io.github.ollama4j.models.chat.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import io.github.ollama4j.models.generate.OllamaStreamHandler;
+import io.github.ollama4j.models.response.Model;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,13 +58,11 @@ public class ChatService implements Serializable {
         m -> {
           DateTimeFormatter formatter =
               DateTimeFormatter.ofPattern("dd MMM, yyyy hh:mm A").withZone(ZoneId.systemDefault());
-          ZonedDateTime dateTime =
-              ZonedDateTime.parse(m.getModifiedAt(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
           modelListItems.add(
               new ModelListItem(
                   m.getModelName(),
                   m.getModel(),
-                  dateTime.format(formatter),
+                  m.getModifiedAt().format(formatter),
                   m.getDigest(),
                   FileUtils.byteCountToDisplaySize(m.getSize())));
         });
@@ -71,8 +71,7 @@ public class ChatService implements Serializable {
 
   public void ask(String message, String model, OllamaStreamHandler streamHandler) {
     OllamaChatRequestBuilder builder = OllamaChatRequestBuilder.getInstance(model);
-    OllamaChatRequestModel ollamaChatRequestModel =
-        builder.withMessages(messages).withMessage(OllamaChatMessageRole.USER, message).build();
+    OllamaChatRequest ollamaChatRequestModel = builder.withMessages(messages).withMessage(OllamaChatMessageRole.USER, message).build();
     try {
       OllamaChatResult chat = ollamaAPI.chat(ollamaChatRequestModel, streamHandler);
       messages = chat.getChatHistory();
@@ -85,8 +84,7 @@ public class ChatService implements Serializable {
   public void askWithImages(
       String message, List<File> imageFiles, String model, OllamaStreamHandler streamHandler) {
     OllamaChatRequestBuilder builder = OllamaChatRequestBuilder.getInstance(model);
-    OllamaChatRequestModel ollamaChatRequestModel =
-        builder
+    OllamaChatRequest ollamaChatRequestModel = builder
             .withMessages(messages)
             .withMessage(OllamaChatMessageRole.USER, message, imageFiles)
             .build();

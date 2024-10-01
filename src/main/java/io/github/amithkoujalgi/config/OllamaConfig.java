@@ -1,6 +1,6 @@
 package io.github.amithkoujalgi.config;
 
-import io.github.amithkoujalgi.ollama4j.core.OllamaAPI;
+import io.github.ollama4j.OllamaAPI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
