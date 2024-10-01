@@ -23,10 +23,10 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.amithkoujalgi.data.ModelItem;
 import io.github.amithkoujalgi.data.ModelListItem;
-import io.github.amithkoujalgi.ollama4j.core.exceptions.OllamaBaseException;
-import io.github.amithkoujalgi.ollama4j.core.models.Model;
 import io.github.amithkoujalgi.service.ChatService;
 import io.github.amithkoujalgi.views.MainLayout;
+import io.github.ollama4j.exceptions.OllamaBaseException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
