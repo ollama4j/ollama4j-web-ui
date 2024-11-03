@@ -35,7 +35,6 @@ import java.util.List;
  */
 @PageTitle("Image-Based Chat")
 @Route(value = "image-chat", layout = MainLayout.class)
-@RouteAlias(value = "image-chat", layout = MainLayout.class)
 public class ChatWithImageView extends VerticalLayout {
 
   private ChatService chatService;
