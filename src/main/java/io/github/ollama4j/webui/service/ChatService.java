@@ -1,7 +1,7 @@
-package io.github.amithkoujalgi.service;
+package io.github.ollama4j.webui.service;
 
-import io.github.amithkoujalgi.data.ModelItem;
-import io.github.amithkoujalgi.data.ModelListItem;
+import io.github.ollama4j.webui.data.ModelItem;
+import io.github.ollama4j.webui.data.ModelListItem;
 import io.github.ollama4j.OllamaAPI;
 import io.github.ollama4j.exceptions.OllamaBaseException;
 import io.github.ollama4j.models.chat.*;
@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;

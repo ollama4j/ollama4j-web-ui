@@ -1,4 +1,4 @@
-package io.github.amithkoujalgi.views;
+package io.github.ollama4j.webui.views;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -12,9 +12,9 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import io.github.amithkoujalgi.views.chat.ChatView;
-import io.github.amithkoujalgi.views.chat.ChatWithImageView;
-import io.github.amithkoujalgi.views.chat.ModelsView;
+import io.github.ollama4j.webui.views.chat.ChatView;
+import io.github.ollama4j.webui.views.chat.ChatWithImageView;
+import io.github.ollama4j.webui.views.chat.ModelsView;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /** The main view is a top-level placeholder for other views. */

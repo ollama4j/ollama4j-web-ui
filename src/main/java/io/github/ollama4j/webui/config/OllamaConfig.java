@@ -1,4 +1,4 @@
-package io.github.amithkoujalgi.config;
+package io.github.ollama4j.webui.config;
 
 import io.github.ollama4j.OllamaAPI;
 import org.springframework.beans.factory.annotation.Value;

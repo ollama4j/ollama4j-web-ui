@@ -1,4 +1,4 @@
-package io.github.amithkoujalgi.data;
+package io.github.ollama4j.webui.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

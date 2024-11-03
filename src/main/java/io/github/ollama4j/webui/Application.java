@@ -1,4 +1,4 @@
-package io.github.amithkoujalgi;
+package io.github.ollama4j.webui;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;

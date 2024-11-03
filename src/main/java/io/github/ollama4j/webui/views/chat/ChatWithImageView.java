@@ -1,4 +1,4 @@
-package io.github.amithkoujalgi.views.chat;
+package io.github.ollama4j.webui.views.chat;
 
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -16,10 +16,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import io.github.amithkoujalgi.data.ModelItem;
+import io.github.ollama4j.webui.data.ModelItem;
 import io.github.ollama4j.exceptions.OllamaBaseException;
-import io.github.amithkoujalgi.service.ChatService;
-import io.github.amithkoujalgi.views.MainLayout;
+import io.github.ollama4j.webui.service.ChatService;
+import io.github.ollama4j.webui.views.MainLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
