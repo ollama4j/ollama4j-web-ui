@@ -64,7 +64,7 @@ spring.servlet.multipart.max-file-size=50MB
 spring.servlet.multipart.max-request-size=50MB
 
 vaadin.launch-browser=true
-vaadin.whitelisted-packages = com.vaadin,org.vaadin,dev.hilla,io.github.amithkoujalgi
+vaadin.whitelisted-packages = com.vaadin,org.vaadin,dev.hilla,io.github.ollama4j
 
 ollama.url=http://localhost:11434
 ollama.request-timeout-seconds=120
