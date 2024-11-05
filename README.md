@@ -85,6 +85,13 @@ Then open http://localhost:8080 in your browser to access the Ollama4j Web UI.
 <img width="2048" alt="Image Chat" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/1ac899bc-a19e-4dc0-bee1-63b67e8fb346">
 <img width="2048" alt="Models" src="https://github.com/ollama4j/ollama4j-web-ui/assets/1876165/c697fd1d-0323-4351-b9a7-25166eff4c7e">
 
+### Improvements
+
+[ ] - Show errors on the UI. For example,
+`io.github.ollama4j.exceptions.OllamaBaseException: model "llama3" not found, try pulling it first`.
+
+[ ] - Settings pane for configuring default params such as `top-p`, `top-k`, etc.
+
 ### Get Involved
 
 Contributions are most welcome! Whether it's reporting a bug, proposing an enhancement, or helping

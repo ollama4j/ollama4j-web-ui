@@ -3,6 +3,7 @@ package io.github.ollama4j.webui.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -10,7 +11,9 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.ollama4j.webui.views.chat.ChatView;
 import io.github.ollama4j.webui.views.chat.ChatWithImageView;
@@ -26,6 +29,17 @@ public class MainLayout extends AppLayout {
     setPrimarySection(Section.DRAWER);
     addDrawerContent();
     addHeaderContent();
+
+    Button darkModeToogleButton = new Button("◑", click -> {
+      ThemeList themeList = UI.getCurrent().getElement().getThemeList();
+      if (themeList.contains(Lumo.DARK)) {
+        themeList.remove(Lumo.DARK);
+      } else {
+        themeList.add(Lumo.DARK);
+      }
+    });
+    darkModeToogleButton.setTooltipText("Switch UI Mode to Light or Dark");
+    addToDrawer(darkModeToogleButton);
 
     String expressionToClearCookies =
         """
@@ -74,7 +88,7 @@ public class MainLayout extends AppLayout {
 
     nav.addItem(
         new SideNavItem(
-            "GitHub",
+            "Give us a Star ⭐",
             "https://github.com/ollama4j/ollama4j-web-ui",
             LineAwesomeIcon.GITHUB.create()));
     return nav;
