@@ -1,4 +1,4 @@
-name: Release JAR
+name: Release Artifacts
 
 on:
   push:
@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -43,3 +42,14 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: target/*.jar
+
+    - name: Log in to Docker Hub
+      run: docker login -u amithkoujalgi -p ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: Dockerfile
+        push: true
+        tags: amithkoujalgi/ollama4j-web-ui:${{ env.RELEASE_VERSION }}
