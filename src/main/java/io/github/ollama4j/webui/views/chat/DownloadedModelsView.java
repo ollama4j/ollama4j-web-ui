@@ -32,8 +32,8 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 
-@PageTitle("Models")
-@Route(value = "models", layout = MainLayout.class)
+@PageTitle("Downloaded Models")
+@Route(value = "downloaded-models", layout = MainLayout.class)
 @Uses(Icon.class)
 public class DownloadedModelsView extends Div {
 

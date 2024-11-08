@@ -8,6 +8,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class LibraryModelItem extends LibraryModel {
     private String popularTagsString;
+    private String link;
+
+    public String getLink() {
+        return String.format("https://ollama.com/library/%s", getName());
+    }
 
     public String getPopularTagsString() {
         StringBuilder tagsString = new StringBuilder();

@@ -13,11 +13,13 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -149,9 +151,17 @@ public class LibraryModelsView extends Div {
         }
 
         private Component createGrid() {
+            String LINK_TEMPLATE_HTML = """
+                       <vaadin-button title="Open" @click="${clickHandler}" theme="tertiary-inline small link">
+                           <a href="https://ollama.com/library/${item.name}" target="_blank">${item.name}</a>
+                       </vaadin-button>
+                    """;
+
             grid = new Grid<>(LibraryModelItem.class, false);
-            grid.addColumn("name").setHeader("Name").setAutoWidth(true);
-            grid.addColumn("description").setHeader("Description").setAutoWidth(false).setWidth("40%");
+            grid.addColumn(LitRenderer.<LibraryModelItem>of(LINK_TEMPLATE_HTML).withProperty("name", LibraryModelItem::getName).withFunction("clickHandler", item -> {
+                Notification.show("Opening model details page for " + item.getName());
+            })).setHeader("Model").setSortable(true).setAutoWidth(true);
+            grid.addColumn("description").setHeader("Description").setAutoWidth(false).setWidth("50%");
             grid.addColumn("pullCount").setHeader("Pulls").setAutoWidth(true);
             grid.addColumn("totalTags").setHeader("Tags").setAutoWidth(true);
             grid.addColumn("popularTagsString").setHeader("Popular Tags").setAutoWidth(true);
