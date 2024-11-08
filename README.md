@@ -43,12 +43,16 @@ This project focuses on the raw capabilities of interacting with various models 
 
 Easiest way to get started is by using Docker. Find the image tags [here](https://hub.docker.com/r/amithkoujalgi/ollama4j-web-ui).
 
+Run the Docker container by issuing this in your terminal:
+
 ```shell
 docker run -it \
   -p 9090:8080 \
   -e OLLAMA_HOST_ADDR='http://192.168.10.1:11434' \
   amithkoujalgi/ollama4j-web-ui
 ```
+
+And the access the Ollama4j Web UI on http://localhost:9090.
 
 ### As a standalone JAR
 
