@@ -52,7 +52,15 @@ VERSION=0.0.1; wget https://github.com/ollama4j/ollama4j-web-ui/releases/downloa
 
 ### Configure
 
-Create a file `application.properties` and add the following configuration.
+Set environment variables.
+
+```shell
+export SERVER_PORT=8080
+export OLLAMA_HOST_ADDR=http://localhost:11434
+```
+
+Or, if you would want to override the base config file, create a file `application.properties` and add the following
+configuration.
 Update the values of `server.port` and `ollama.url` according to your needs.
 
 ```shell
@@ -89,7 +97,7 @@ Then open http://localhost:8080 in your browser to access the Ollama4j Web UI.
 ### Improvements
 
 - [ ] Show errors on the UI. For example,
-`io.github.ollama4j.exceptions.OllamaBaseException: model "llama3" not found, try pulling it first`.
+  `io.github.ollama4j.exceptions.OllamaBaseException: model "llama3" not found, try pulling it first`.
 - [ ] Settings pane for configuring default params such as `top-p`, `top-k`, etc.
 
 ### Get Involved
