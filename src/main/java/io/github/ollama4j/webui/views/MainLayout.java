@@ -17,7 +17,8 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.ollama4j.webui.views.chat.ChatView;
 import io.github.ollama4j.webui.views.chat.ChatWithImageView;
-import io.github.ollama4j.webui.views.chat.ModelsView;
+import io.github.ollama4j.webui.views.chat.DownloadedModelsView;
+import io.github.ollama4j.webui.views.chat.LibraryModelsView;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /** The main view is a top-level placeholder for other views. */
@@ -84,8 +85,9 @@ public class MainLayout extends AppLayout {
     nav.addItem(
         new SideNavItem("Image-Based Chat", ChatWithImageView.class, LineAwesomeIcon.COMMENT_MEDICAL_SOLID.create()));
     nav.addItem(
-        new SideNavItem("Models", ModelsView.class, LineAwesomeIcon.SNOWFLAKE_SOLID.create()));
-
+        new SideNavItem("Downloaded Models", DownloadedModelsView.class, LineAwesomeIcon.BRAIN_SOLID.create()));
+    nav.addItem(
+            new SideNavItem("Model Library", LibraryModelsView.class, LineAwesomeIcon.SNOWFLAKE_SOLID.create()));
     nav.addItem(
         new SideNavItem(
             "Give us a Star ⭐",
