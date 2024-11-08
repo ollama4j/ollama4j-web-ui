@@ -46,7 +46,7 @@ Easiest way to get started is by using Docker. Find the image tags [here](https:
 ```shell
 docker run -it \
   -p 9090:8080 \
-  -e OLLAMA_HOST_ADDR='http://192.168.29.223:11434' \
+  -e OLLAMA_HOST_ADDR='http://192.168.10.1:11434' \
   amithkoujalgi/ollama4j-web-ui
 ```
 
