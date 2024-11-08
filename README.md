@@ -39,7 +39,18 @@ This project focuses on the raw capabilities of interacting with various models 
 
 ## Running the application
 
-### Download
+### Via Docker
+
+Easiest way to get started is by using Docker. Find the image tags [here](https://hub.docker.com/r/amithkoujalgi/ollama4j-web-ui).
+
+```shell
+docker run -it \
+  -p 9090:8080 \
+  -e OLLAMA_HOST_ADDR='http://192.168.29.223:11434' \
+  amithkoujalgi/ollama4j-web-ui
+```
+
+### As a standalone JAR
 
 Download the latest version from [here](https://github.com/ollama4j/ollama4j-web-ui/releases).
 
