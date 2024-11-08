@@ -87,10 +87,9 @@ Then open http://localhost:8080 in your browser to access the Ollama4j Web UI.
 
 ### Improvements
 
-[ ] - Show errors on the UI. For example,
+- [ ] Show errors on the UI. For example,
 `io.github.ollama4j.exceptions.OllamaBaseException: model "llama3" not found, try pulling it first`.
-
-[ ] - Settings pane for configuring default params such as `top-p`, `top-k`, etc.
+- [ ] Settings pane for configuring default params such as `top-p`, `top-k`, etc.
 
 ### Get Involved
 
