@@ -41,7 +41,8 @@ This project focuses on the raw capabilities of interacting with various models 
 
 ### Via Docker
 
-Easiest way to get started is by using Docker. Find the image tags [here](https://hub.docker.com/r/amithkoujalgi/ollama4j-web-ui).
+If you already have a Ollama service running, the easiest way to get started is by using Docker by pointing to the host
+address of Ollama. Find the image tags [here](https://hub.docker.com/r/amithkoujalgi/ollama4j-web-ui).
 
 Run the Docker container by issuing this in your terminal:
 
@@ -52,7 +53,37 @@ docker run -it \
   amithkoujalgi/ollama4j-web-ui
 ```
 
-And the access the Ollama4j Web UI on http://localhost:9090.
+### Via Docker Compose
+
+If you want to start the Ollama service and the Ollama Web UI as Docker containers, create a
+file called `docker-compose.yaml` and add the following contents in it:
+
+```yaml
+services:
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ~/ollama:/root/.ollama
+    shm_size: 512mb
+
+  ollama4j-web-ui:
+    image: amithkoujalgi/ollama4j-web-ui
+    ports:
+      - "9090:8080"
+    environment:
+      OLLAMA_HOST_ADDR: 'http://ollama:11434'
+```
+
+Then open up your terminal and then type in:
+
+```shell
+docker-compose -f /path/to/your/docker-compose.yaml up
+```
+
+And then you access the Ollama4j Web UI on http://localhost:9090.
 
 ### As a standalone JAR
 

@@ -1,0 +1,16 @@
+services:
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ~/ollama:/root/.ollama
+    shm_size: 512mb
+
+  ollama4j-web-ui:
+    image: amithkoujalgi/ollama4j-web-ui
+    ports:
+      - "9090:8080"
+    environment:
+      OLLAMA_HOST_ADDR: 'http://ollama:11434'
