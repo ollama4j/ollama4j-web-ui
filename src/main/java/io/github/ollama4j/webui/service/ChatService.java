@@ -1,5 +1,6 @@
 package io.github.ollama4j.webui.service;
 
+import io.github.ollama4j.models.ps.ModelsProcessResponse;
 import io.github.ollama4j.models.response.LibraryModel;
 import io.github.ollama4j.webui.data.ModelItem;
 import io.github.ollama4j.webui.data.ModelListItem;
