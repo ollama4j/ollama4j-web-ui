@@ -1,5 +1,6 @@
 package io.github.ollama4j.webui.service;
 
+import io.github.ollama4j.models.ps.ModelsProcessResponse;
 import io.github.ollama4j.models.response.LibraryModel;
 import io.github.ollama4j.webui.data.ModelItem;
 import io.github.ollama4j.webui.data.ModelListItem;
@@ -101,4 +102,50 @@ public class ChatService implements Serializable {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean isConnected() {
+        try {
+            return ollamaAPI.ping();
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+
+    public ConnectionInfo getConnectionInfo() {
+        try {
+            return new ConnectionInfo("Connected", ollamaAPI.ps());
+        } catch (IOException | InterruptedException | OllamaBaseException e) {
+            // Ignored and status is just not available
+        }
+        return ConnectionInfo.NOT_AVAILABLE;
+    }
+
+    public static class ConnectionInfo {
+
+        public static final ConnectionInfo NOT_AVAILABLE = new ConnectionInfo("Not available", null);
+
+        private final String status;
+        private final ModelsProcessResponse ps;
+
+
+        public ConnectionInfo(String statusText, ModelsProcessResponse ps) {
+            this.status = statusText;
+            this.ps = ps;
+        }
+
+        public boolean isAvailable() {
+            return ps != null;
+        }
+
+        public List<ModelsProcessResponse.ModelProcess> getAvailableModels() {
+            return ps.getModels();
+        }
+
+        public String getHost() {
+            // TODO: OllamaAPI.host is private.
+            return "localhost";
+        }
+    }
+
 }
