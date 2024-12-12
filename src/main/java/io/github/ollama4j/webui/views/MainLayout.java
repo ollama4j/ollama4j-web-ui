@@ -15,6 +15,7 @@ import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import io.github.ollama4j.webui.service.ChatService;
 import io.github.ollama4j.webui.views.chat.ChatView;
 import io.github.ollama4j.webui.views.chat.ChatWithImageView;
 import io.github.ollama4j.webui.views.chat.DownloadedModelsView;
@@ -26,7 +27,10 @@ public class MainLayout extends AppLayout {
 
   private H2 viewTitle;
 
-  public MainLayout() {
+  private final ChatService service;
+  
+  public MainLayout(ChatService service) {
+    this.service = service;
     setPrimarySection(Section.DRAWER);
     addDrawerContent();
     addHeaderContent();
@@ -101,10 +105,17 @@ public class MainLayout extends AppLayout {
     return layout;
   }
 
+
   @Override
   protected void afterNavigation() {
     super.afterNavigation();
     viewTitle.setText(getCurrentPageTitle());
+
+    // Make a connection check but allow listing models from website
+    if (!service.isConnected() &&  !(this.getContent() instanceof LibraryModelsView))  {
+      UI.getCurrent().navigate(OllamaConnectionView.class);
+    }
+
   }
 
   private String getCurrentPageTitle() {
