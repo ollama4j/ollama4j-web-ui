@@ -1,38 +1,37 @@
 package io.github.ollama4j.webui.views.chat;
 
-import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.ollama4j.exceptions.OllamaBaseException;
 import io.github.ollama4j.models.response.LibraryModel;
+import io.github.ollama4j.webui.components.Badge;
 import io.github.ollama4j.webui.data.LibraryModelItem;
+import io.github.ollama4j.webui.data.ModelListItem;
 import io.github.ollama4j.webui.service.ChatService;
 import io.github.ollama4j.webui.views.MainLayout;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @PageTitle("Model Library")
 @Route(value = "model-library", layout = MainLayout.class)
@@ -41,158 +40,146 @@ public class LibraryModelsView extends Div {
 
     private Grid<LibraryModelItem> grid;
 
-    private Filters filters;
-
     private ChatService chatService;
+
+    private PullDialog pullDialog;
+
+    private ArrayList<LibraryModelItem> items = new ArrayList<>();
 
     public LibraryModelsView(ChatService chatService) {
         setSizeFull();
         addClassNames("models-view");
-
-        filters = new Filters(() -> filters.refreshGrid(), grid);
-        filters.setup(chatService);
-
-        VerticalLayout layout = new VerticalLayout(filters.createGrid());
-        layout.setSizeFull();
-        layout.setPadding(false);
-        layout.setSpacing(false);
-        add(layout);
         this.chatService = chatService;
-    }
+        this.grid = new Grid<>(LibraryModelItem.class, false);
 
-    private HorizontalLayout createMobileFilters() {
-        // Mobile version
-        HorizontalLayout mobileFilters = new HorizontalLayout();
-        mobileFilters.setWidthFull();
-        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER, LumoUtility.AlignItems.CENTER);
-        mobileFilters.addClassName("mobile-filters");
+        // Configure Grid columns
+        grid.addColumn(LibraryModelItem::getName)
+                .setHeader("Model")
+                .setSortable(true)
+                .setResizable(true);
+        grid.addColumn(LibraryModelItem::getDescription)
+                .setHeader("Description")
+                .setResizable(true);
+        grid.addColumn(LibraryModelItem::getLastUpdated)
+                .setHeader("Updated")
+                .setSortable(true)
+                .setResizable(true);
+        grid.addColumn(LibraryModelItem::getPullCount)
+                .setHeader("Pulls")
+                .setSortable(true);
+        grid.addColumn(LibraryModelItem::getTotalTags)
+                .setHeader("Tags")
+                .setSortable(true);
 
-        Icon mobileIcon = new Icon("lumo", "plus");
-        Span filtersHeading = new Span("Filters");
-        mobileFilters.add(mobileIcon, filtersHeading);
-        mobileFilters.setFlexGrow(1, filtersHeading);
-        mobileFilters.addClickListener(e -> {
-            if (filters.getClassNames().contains("visible")) {
-                filters.removeClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
-            } else {
-                filters.addClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
+
+        // Action column
+        final Collection<ModelListItem> loadedModels = new ArrayList<>();
+        try {
+            loadedModels.addAll(chatService.getModels());
+        } catch (Exception ignored) { }
+        grid.addComponentColumn(model -> {
+            Button link = new Button("",new Icon(VaadinIcon.EXTERNAL_LINK),
+                    e -> UI.getCurrent().getPage().open(model.getLink()));
+            link.setTooltipText("View at ollama.com");
+            Button pullButton = new Button("",new Icon(VaadinIcon.DOWNLOAD),
+                    e -> openPullDialog(model));
+            pullButton.setEnabled(loadedModels.stream().noneMatch(m -> model.getName().equals(m.getName())));
+            pullButton.setTooltipText("Pull model locally");
+            return new HorizontalLayout(pullButton,link);
+        }).setHeader("");
+
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setSizeFull();
+
+        // Add a listener for item selection
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            LibraryModelItem selectedModel = event.getValue();
+            if (selectedModel != null) {
             }
         });
-        return mobileFilters;
+
+        add(grid);
+        refreshGrid();
     }
 
-    public static class Filters extends Div {
+    private void openPullDialog(LibraryModelItem model) {
+        // Close if already open
+        if (pullDialog != null) {
+            pullDialog.close();
+            pullDialog = null;
+        }
+        pullDialog = new PullDialog(model);
+        pullDialog.open();
+    }
 
-        private final TextField name = new TextField("Name");
-        private final TextField phone = new TextField("Phone");
-        private final DatePicker startDate = new DatePicker("Date of Birth");
-        private final DatePicker endDate = new DatePicker();
-        private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>("Occupation");
-        private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
-
-        private ChatService chatService;
-        private Grid grid;
-
-        public Filters(Runnable onSearch, Grid grid) {
-
-            setWidthFull();
-            addClassName("filter-layout");
-            addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM, LumoUtility.BoxSizing.BORDER);
-            name.setPlaceholder("First or last name");
-
-            occupations.setItems("Insurance Clerk", "Mortarman", "Beer Coil Cleaner", "Scale Attendant");
-
-            roles.setItems("Worker", "Supervisor", "Manager", "External");
-            roles.addClassName("double-width");
-
-            // Action buttons
-            Button resetBtn = new Button("Reset");
-            resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            resetBtn.addClickListener(e -> {
-                name.clear();
-                phone.clear();
-                startDate.clear();
-                endDate.clear();
-                occupations.clear();
-                roles.clear();
-                onSearch.run();
+    private void refreshGrid() {
+        items = new ArrayList<>(); // Todo: this could be cached
+        try {
+            List<LibraryModel> libraryModels = chatService.listLibraryModels();
+            libraryModels.forEach(libraryModel -> {
+                LibraryModelItem item = new LibraryModelItem();
+                item.setName(libraryModel.getName());
+                item.setDescription(libraryModel.getDescription());
+                item.setPullCount(libraryModel.getPullCount());
+                item.setTotalTags(libraryModel.getTotalTags());
+                item.setLastUpdated(libraryModel.getLastUpdated());
+                item.setPopularTags(libraryModel.getPopularTags());
+                items.add(item);
             });
-            Button searchBtn = new Button("Search");
-            searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            searchBtn.addClickListener(e -> onSearch.run());
-
-            Div actions = new Div(resetBtn, searchBtn);
-            actions.addClassName(LumoUtility.Gap.SMALL);
-            actions.addClassName("actions");
-
-            add(name, phone, createDateRangeFilter(), occupations, roles, actions);
-        }
-
-        private Component createDateRangeFilter() {
-            startDate.setPlaceholder("From");
-
-            endDate.setPlaceholder("To");
-
-            // For screen readers
-            startDate.setAriaLabel("From date");
-            endDate.setAriaLabel("To date");
-
-            FlexLayout dateRangeComponent = new FlexLayout(startDate, new Text(" – "), endDate);
-            dateRangeComponent.setAlignItems(FlexComponent.Alignment.BASELINE);
-            dateRangeComponent.addClassName(LumoUtility.Gap.XSMALL);
-
-            return dateRangeComponent;
-        }
-
-        public void setup(ChatService chatServiceCfg) {
-            chatService = chatServiceCfg;
-        }
-
-        private Component createGrid() {
-            String LINK_TEMPLATE_HTML = """
-                       <vaadin-button title="Open" @click="${clickHandler}" theme="tertiary-inline small link">
-                           <a href="https://ollama.com/library/${item.name}" target="_blank">${item.name}</a>
-                       </vaadin-button>
-                    """;
-
-            grid = new Grid<>(LibraryModelItem.class, false);
-            grid.addColumn(LitRenderer.<LibraryModelItem>of(LINK_TEMPLATE_HTML).withProperty("name", LibraryModelItem::getName).withFunction("clickHandler", item -> {
-                Notification.show("Opening model details page for " + item.getName());
-            })).setHeader("Model").setSortable(true).setAutoWidth(true);
-            grid.addColumn("description").setHeader("Description").setAutoWidth(false).setWidth("50%");
-            grid.addColumn("pullCount").setHeader("Pulls").setAutoWidth(true);
-            grid.addColumn("totalTags").setHeader("Tags").setAutoWidth(true);
-            grid.addColumn("popularTagsString").setHeader("Popular Tags").setAutoWidth(true);
-            grid.addColumn("lastUpdated").setHeader("Updated").setAutoWidth(true);
-
-            List<LibraryModelItem> items = new ArrayList<>();
-            try {
-                List<LibraryModel> libraryModels = chatService.listLibraryModels();
-                libraryModels.forEach(libraryModel -> {
-                    LibraryModelItem item = new LibraryModelItem();
-                    item.setName(libraryModel.getName());
-                    item.setDescription(libraryModel.getDescription());
-                    item.setPullCount(libraryModel.getPullCount());
-                    item.setTotalTags(libraryModel.getTotalTags());
-                    item.setLastUpdated(libraryModel.getLastUpdated());
-                    item.setPopularTags(libraryModel.getPopularTags());
-//                    item.setPopularTagsString();
-                    items.add(item);
-                });
-            } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
             grid.setItems(items);
-            grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-            grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-
-            return grid;
         }
+    }
 
-        private void refreshGrid() {
-            grid.getDataProvider().refreshAll();
+    /** Dialog for displaying model details before pull.
+     *
+     */
+    class PullDialog extends Dialog {
+
+        PullDialog(LibraryModelItem model) {
+            // Dialog for displaying details
+            setMinWidth("300px");
+            setMinHeight("300px");
+            setMaxWidth("600px");
+            setMaxHeight("600px");
+            setCloseOnEsc(true);
+            setCloseOnOutsideClick(true);
+
+            setHeaderTitle(model.getName());
+            VerticalLayout dialogContent = new VerticalLayout();
+            dialogContent.setMargin(false);
+            dialogContent.setPadding(false);
+            dialogContent.setSizeFull();
+            dialogContent.add(new Paragraph(model.getDescription()));
+            dialogContent.add(new HorizontalLayout(model.getPopularTags()
+                    .stream().map(t -> new Badge(t, Badge.BadgeVariant.SMALL))
+                    .toList().toArray(new Badge[]{})));
+            dialogContent.add(new Span("%s pulls, updated %s".formatted(model.getPullCount(),
+                    model.getLastUpdated())));
+            this.add(dialogContent);
+
+
+            Button closeButton = new Button("Close", event -> this.close());
+            closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            this.add(closeButton);
+            closeButton.addClickShortcut(Key.ESCAPE);
+            Button pullButton = new Button("Pull", new Icon(VaadinIcon.DOWNLOAD), e -> {
+                chatService.pullModel(model.getName());
+                this.close();
+            });
+
+            pullButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            pullButton.addClickShortcut(Key.ENTER);
+            HorizontalLayout buttons = new HorizontalLayout(closeButton, pullButton);
+            buttons.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+            buttons.setWidthFull();
+            this.getFooter().add(buttons);
+
+            this.addDialogCloseActionListener(l -> {
+                pullDialog = null;
+            });
         }
     }
 }
