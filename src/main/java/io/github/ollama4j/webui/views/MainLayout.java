@@ -31,16 +31,19 @@ public class MainLayout extends AppLayout {
     addDrawerContent();
     addHeaderContent();
 
-    Button darkModeToogleButton = new Button("◑", click -> {
-      ThemeList themeList = UI.getCurrent().getElement().getThemeList();
-      if (themeList.contains(Lumo.DARK)) {
-        themeList.remove(Lumo.DARK);
-      } else {
-        themeList.add(Lumo.DARK);
-      }
+    Button darkModeToggleButton = new Button("◑", click -> {
+      String toggleScript = """
+        const theme = document.documentElement.getAttribute('theme');
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('theme', '');
+        } else {
+          document.documentElement.setAttribute('theme', 'dark');
+        }
+        """;
+      UI.getCurrent().getPage().executeJs(toggleScript);
     });
-    darkModeToogleButton.setTooltipText("Switch UI Mode to Light or Dark");
-    addToDrawer(darkModeToogleButton);
+    darkModeToggleButton.setTooltipText("Switch UI Mode to Light or Dark");
+    addToDrawer(darkModeToggleButton);
 
     String expressionToClearCookies =
         """
