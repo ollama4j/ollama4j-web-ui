@@ -47,7 +47,7 @@ public class ChatService implements Serializable {
         Collection<ModelItem> modelItems = new ArrayList<>(Collections.emptyList());
         ollamaAPI
                 .listModels()
-                .forEach(x -> modelItems.add(new ModelItem(x.getModelName(), x.getModelVersion())));
+                .forEach(x -> modelItems.add(new ModelItem(x.getName(), x.getModelVersion())));
         return modelItems;
     }
 

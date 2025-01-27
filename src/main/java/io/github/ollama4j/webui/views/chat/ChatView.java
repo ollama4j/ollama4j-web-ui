@@ -1,5 +1,6 @@
 package io.github.ollama4j.webui.views.chat;
 
+import com.vaadin.flow.component.ScrollOptions;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageInputI18n;
@@ -44,7 +45,7 @@ public class ChatView extends VerticalLayout {
     ComboBox<ModelItem> modelsDropdown = new ComboBox<>("Models");
     try {
       modelsDropdown.setItems(chatService.getModelItems());
-    } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException  e) {
+    } catch (OllamaBaseException | IOException | URISyntaxException | InterruptedException e) {
       throw new RuntimeException(e);
     }
     modelsDropdown.setItemLabelGenerator(ModelItem::getName);
@@ -62,29 +63,29 @@ public class ChatView extends VerticalLayout {
     }
 
     modelsDropdown.addValueChangeListener(
-        event -> {
-          MessageListItem welcome =
-              new MessageListItem(
-                  String.format(
-                      "Hi! I'm %s. How may I assist you today?", event.getValue().getName()),
-                  Instant.now(),
-                  "AI");
-          welcome.setUserAbbreviation("AI");
-          welcome.setUserColorIndex(2);
-          chat.setItems(welcome);
-          chatEntries.clear();
-          chatService.clearMessages();
-          modelSelected = event.getValue().getName();
-          //          header.setText(modelSelected);
-        });
+            event -> {
+              MessageListItem welcome =
+                      new MessageListItem(
+                              String.format(
+                                      "Hi! I'm %s. How may I assist you today?", event.getValue().getName()),
+                              Instant.now(),
+                              "AI");
+              welcome.setUserAbbreviation("AI");
+              welcome.setUserColorIndex(2);
+              chat.setItems(welcome);
+              chatEntries.clear();
+              chatService.clearMessages();
+              modelSelected = event.getValue().getName();
+              //          header.setText(modelSelected);
+            });
 
 //    add(modelsDropdown);
 
     chat = new MessageList();
 
     MessageListItem welcome =
-        new MessageListItem(
-            "Hello there! Select a model to start chatting with AI.", Instant.now(), "AI");
+            new MessageListItem(
+                    "Hello there! Select a model to start chatting with AI.", Instant.now(), "AI");
     welcome.setUserAbbreviation("AI");
     welcome.setUserColorIndex(2);
 
@@ -95,7 +96,7 @@ public class ChatView extends VerticalLayout {
     //    add(header, chat, input);
     add(modelsDropdown, chat, input);
     input.addSubmitListener(this::onSubmit);
-    this.setHorizontalComponentAlignment(Alignment.CENTER, modelsDropdown,chat, input);
+    this.setHorizontalComponentAlignment(Alignment.CENTER, modelsDropdown, chat, input);
     this.setPadding(true);
     this.setHeightFull();
     chat.setSizeFull();
@@ -117,12 +118,16 @@ public class ChatView extends VerticalLayout {
     chat.setItems(chatEntries);
 
     Thread t =
-        new Thread(
-            () ->
-                chatService.ask(
-                    submitEvent.getValue(),
-                    modelSelected,
-                    (s) -> getUI().ifPresent(ui -> ui.access(() -> answer.setText(s)))));
+            new Thread(
+                    () ->
+                            chatService.ask(
+                                    submitEvent.getValue(),
+                                    modelSelected,
+                                    (s) -> getUI().ifPresent(ui -> ui.access(() -> {
+                                      answer.setText(s);
+                                      String jsCode = "document.querySelector('vaadin-message-list vaadin-message:last-child').scrollIntoView({ behavior: 'smooth' });";
+                                      ui.getPage().executeJs(jsCode);
+                                    }))));
     t.start();
   }
 }
