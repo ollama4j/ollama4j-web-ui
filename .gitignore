@@ -29,3 +29,5 @@ frontend/generated
 .DS_Store
 *.DS_Store
 **/.DS_Store
+
+/src/main/bundles/
