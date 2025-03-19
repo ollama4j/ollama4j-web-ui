@@ -159,3 +159,11 @@ by [@AgentSchmecker](https://github.com/AgentSchmecker).
 
 The nomenclature has been adopted from the incredible [Ollama](https://ollama.ai/)
 project.
+
+**Thanks to the amazing contributors**
+
+<p align="center">
+  <a href="https://github.com/ollama4j/ollama4j-web-ui/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=ollama4j/ollama4j-web-ui"  alt=""/>
+  </a>
+</p>
