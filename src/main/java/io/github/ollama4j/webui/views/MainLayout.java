@@ -18,10 +18,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import io.github.ollama4j.webui.service.ChatService;
-import io.github.ollama4j.webui.views.chat.ChatView;
-import io.github.ollama4j.webui.views.chat.ChatWithImageView;
-import io.github.ollama4j.webui.views.chat.DownloadedModelsView;
-import io.github.ollama4j.webui.views.chat.LibraryModelsView;
+import io.github.ollama4j.webui.views.chat.*;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /** The main view is a top-level placeholder for other views. */
@@ -93,6 +90,8 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
     nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS.create()));
     nav.addItem(
         new SideNavItem("Image-Based Chat", ChatWithImageView.class, LineAwesomeIcon.COMMENT_MEDICAL_SOLID.create()));
+    nav.addItem(
+            new SideNavItem("Document-Based Chat", ChatWithDocumentView.class, LineAwesomeIcon.BOOK_SOLID.create()));
     nav.addItem(
         new SideNavItem("Downloaded Models", DownloadedModelsView.class, LineAwesomeIcon.BRAIN_SOLID.create()));
     nav.addItem(
