@@ -1,5 +1,7 @@
 # Ollama4j Web UI
 
+> **Note:** This repository is no longer actively maintained and has been migrated to [Doota](https://github.com/ollama4j/Doota).
+
 A web UI for [Ollama](https://ollama.com/) written in Java
 using [Spring Boot](https://spring.io/projects/spring-boot/) and [Vaadin](https://vaadin.com/) framework
 and [Ollama4j](https://github.com/amithkoujalgi/ollama4j).
